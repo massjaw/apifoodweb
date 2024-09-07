@@ -1,0 +1,7 @@
+{
+    "Environment": "development",
+    
+    "Encryption": {
+        "enc_salt": "PT1RZmlrelZVRkVhaGRXWXlKek55SVRPMklETXdVSFhITjFVWkJVSWhNRmFXaEVhdUYxVmFWbEk2SXlhalZHYWpKeWU="
+    }
+}
