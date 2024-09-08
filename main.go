@@ -1,6 +1,7 @@
 package main
 
 import (
+	"apifoodweb/src/database"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -16,6 +17,17 @@ func init() {
 
 func main() {
 	logrus.Infoln("application start: this apps work on " + Environment + " environment.")
+
+	logrus.Infoln("initiate database connection")
+	if errInitConn := database.InitAllConnection(); errInitConn != nil {
+		logrus.Error("error initiate database connction", errInitConn)
+	}
+
+	defer func() {
+		logrus.Debug("close all database connection")
+		database.CloseAllConnection()
+		logrus.Error("application shutdown")
+	}()
 }
 
 func initViper() {
