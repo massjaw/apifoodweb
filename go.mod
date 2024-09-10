@@ -3,6 +3,7 @@ module apifoodweb
 go 1.22
 
 require (
+	github.com/dgryski/go-camellia v0.0.0-20191119043421-69a8a13fb23d
 	github.com/lib/pq v1.10.9
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
