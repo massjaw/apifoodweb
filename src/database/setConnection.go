@@ -78,7 +78,7 @@ func createConnectionPostgres(dbConn *poolPgsql, viperDirection string) error {
 	dbConn.dbPgsql = db
 	//dbConn.viperDirection = viperDirection
 
-	util.SystemLog("Init Connection", "Success open and store connection to pool: database "+config.Database+" opened", nil).Info()
+	util.SystemLog("Init Connection", "Success open and store connection to pool: database "+config.Database+" opened", nil).Debug()
 
 	return nil
 }
@@ -87,7 +87,7 @@ func createConnectionPostgres(dbConn *poolPgsql, viperDirection string) error {
 
 // Turn struct postgress database config into connection string.
 func (c *PostgresConfig) connString() string {
-	util.SystemLog("Init Connection", "transform struct to connection string", nil).Info()
+	util.SystemLog("Init Connection", "transform struct to connection string", nil).Debug()
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", c.Host, c.Username, c.Password, c.Database, c.Port)
 }
 
@@ -96,7 +96,7 @@ func getPostgresConfig(viperDirection string) *PostgresConfig {
 
 	var configStruct PostgresConfig
 
-	util.SystemLog("Init Connection", "Initiate connection. try get connection string use viper.", nil).Info()
+	util.SystemLog("Init Connection", "Initiate connection. try get connection string use viper.", nil).Debug()
 
 	configJson := viper.GetStringMap(viperDirection)
 
@@ -111,7 +111,7 @@ func getPostgresConfig(viperDirection string) *PostgresConfig {
 		return nil
 	}
 
-	util.SystemLog("Init Connection", "Success get config "+configStruct.Database+" database", nil).Info()
+	util.SystemLog("Init Connection", "Success get config "+configStruct.Database+" database", nil).Debug()
 	return &configStruct
 }
 
