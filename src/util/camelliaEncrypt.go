@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
-	"errors"
 	"io"
 
 	"github.com/dgryski/go-camellia"
@@ -41,41 +40,41 @@ func EncryptCamellia(plaintext string) (string, error) {
 }
 
 // Fungsi untuk mendekripsi ciphertext menggunakan Camellia
-func DecryptCamellia(encryptedString string) (string, error) {
+func DecryptCamellia(encryptedString string) string {
 
 	// Decode ciphertext dari base64
 	ciphertext, err := base64.StdEncoding.DecodeString(encryptedString)
 	if err != nil {
 		SystemLog("Decrypt CAMELLIA", "Error when turn secret to cipher", err).Error()
-		return "", err
+		return ""
 	}
 
 	// Membuat cipher Camellia dengan kunci
 	c, err := camellia.New([]byte(getSalt()))
 	if err != nil {
-		SystemLog("Encrypt CAMELLIA", "Error create cipher block", err).Error()
-		return "", err
+		SystemLog("Decrypt CAMELLIA", "Error create cipher block", err).Error()
+		return ""
 	}
 
 	gcm, err := cipher.NewGCM(c)
 	if err != nil {
-		SystemLog("Encrypt CAMELLIA", "Error create new GCM", err).Error()
-		return "", err
+		SystemLog("Decrypt CAMELLIA", "Error create new GCM", err).Error()
+		return ""
 	}
 	nonceSize := gcm.NonceSize()
 	if len(ciphertext) < nonceSize {
-		SystemLog("Encrypt CAMELLIA", "Error in nonce validation", err).Error()
-		return "", errors.New("Error in ValidateNonceSize")
+		SystemLog("Decrypt CAMELLIA", "Error in nonce validation", err).Error()
+		return ""
 	}
 	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
 
 	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		SystemLog("Encrypt CAMELLIA", "Error while open GCM", err).Error()
-		return "", err
+		SystemLog("Decrypt CAMELLIA", "Error while open GCM", err).Error()
+		return ""
 	}
 
-	return string(plaintext), nil
+	return string(plaintext)
 }
 
 func getSalt() string {
