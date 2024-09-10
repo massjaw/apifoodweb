@@ -76,7 +76,7 @@ func createConnectionPostgres(dbConn *poolPgsql, viperDirection string) error {
 	db.SetMaxIdleConns(5)
 
 	dbConn.dbPgsql = db
-	//dbConn.viperDirection = viperDirection
+	dbConn.viperDirection = viperDirection
 
 	util.SystemLog("Init Connection", "Success open and store connection to pool: database "+config.Database+" opened", nil).Debug()
 
@@ -88,7 +88,7 @@ func createConnectionPostgres(dbConn *poolPgsql, viperDirection string) error {
 // Turn struct postgress database config into connection string.
 func (c *PostgresConfig) connString() string {
 	util.SystemLog("Init Connection", "transform struct to connection string", nil).Debug()
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", c.Host, c.Username, c.Password, c.Database, c.Port)
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", c.Host, c.Username, util.DecryptCamellia(c.Password), c.Database, c.Port)
 }
 
 // Function to get specific postgress database config,insert viper direction as input parameter.
