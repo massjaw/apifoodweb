@@ -1,7 +1,19 @@
 {
     "Environment": "development",
-    
+
     "Encryption": {
-        "enc_salt": "PT1RZmlrelZVRkVhaGRXWXlKek55SVRPMklETXdVSFhITjFVWkJVSWhNRmFXaEVhdUYxVmFWbEk2SXlhalZHYWpKeWU="
+        "enc_salt": "ZDNkNDc0ZDQ5NjY0NzRhNTEzOTU3NGQ0ODY0NjQ1YTU4Nzk0NDVlNDAzZDQ3NWE1ODcxNTIzOTU5Nzk1NDVmNDc3MTQ0NWE1OTdkNDc1YTVhNzk1NzVkNA=="
+    },
+
+    "Database": {
+        "Postgres": {
+            "apifoodapp": {
+                "host": "localhost",
+                "port": 5432,
+                "dbname": "apifoodapp",
+                "username": "postgres",
+                "password": "yR0eo61bjLP+Qb+If4b9b8DM0AdAns1gGoANg7fbtOn0RRs="
+            }
+        }
     }
 }
