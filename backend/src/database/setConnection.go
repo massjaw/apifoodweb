@@ -1,7 +1,7 @@
 package database
 
 import (
-	"apifoodweb/src/util"
+	"apifoodweb/backend/src/util"
 	"database/sql"
 	"encoding/json"
 	"errors"
