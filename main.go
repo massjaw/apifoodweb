@@ -16,9 +16,9 @@ func init() {
 }
 
 func main() {
-	logrus.Infoln("application start: this apps work on " + Environment + " environment.")
+	logrus.Debug("application start: this apps work on " + Environment + " environment.")
 
-	logrus.Infoln("initiate database connection")
+	logrus.Debug("initiate database connection")
 	if errInitConn := database.InitAllConnection(); errInitConn != nil {
 		logrus.Error("error initiate database connction", errInitConn)
 	}
@@ -26,7 +26,7 @@ func main() {
 	defer func() {
 		logrus.Debug("close all database connection")
 		database.CloseAllConnection()
-		logrus.Error("application shutdown")
+		logrus.Debug("application shutdown")
 	}()
 }
 
@@ -47,6 +47,7 @@ func initViper() {
 func initLogrus() {
 
 	logrus.SetOutput(os.Stdout)
+	logrus.SetLevel(logrus.DebugLevel)
 
 	logrus.SetFormatter(&logrus.TextFormatter{
 		ForceColors:     true,
