@@ -1,10 +1,9 @@
-package database
+package config
 
 import (
 	"apifoodweb/backend/src/util"
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"time"
 
@@ -23,6 +22,7 @@ type PostgresConfig struct {
 
 type poolPgsql struct {
 	dbPgsql        *sql.DB
+	database       string
 	viperDirection string
 }
 
@@ -76,6 +76,7 @@ func createConnectionPostgres(dbConn *poolPgsql, viperDirection string) error {
 	db.SetMaxIdleConns(5)
 
 	dbConn.dbPgsql = db
+	dbConn.database = config.Database
 	dbConn.viperDirection = viperDirection
 
 	util.SystemLog("Init Connection", "Success open and store connection to pool: database "+config.Database+" opened", nil).Debug()
@@ -119,7 +120,7 @@ func getPostgresConfig(viperDirection string) *PostgresConfig {
 func (db *poolPgsql) checkConnectionPostgres() (*sql.DB, error) {
 
 	if db.dbPgsql == nil {
-		util.SystemLog("Get Connection", "connection "+db.viperDirection+" not found, reopen connection", nil).Debug()
+		util.SystemLog("Get Connection", "connection "+db.database+" not found, reopen connection", nil).Debug()
 		createConnectionPostgres(db, db.viperDirection)
 	}
 
@@ -127,36 +128,24 @@ func (db *poolPgsql) checkConnectionPostgres() (*sql.DB, error) {
 
 		var errPing error
 
-		if errPing = ConnApiFoodApp.dbPgsql.Ping(); errPing != nil {
+		if errPing = db.dbPgsql.Ping(); errPing != nil {
 
 			time.Sleep(1 * time.Minute)
 
-			util.SystemLog("Get Connection", "connection "+ConnApiFoodApp.viperDirection+" not responded", errPing).Debug()
+			util.SystemLog("Get Connection", "connection "+ConnApiFoodApp.database+" not responded", errPing).Debug()
 			createConnectionPostgres(db, db.viperDirection)
+
+			if errPing == nil {
+				util.SystemLog("Get Connection", "connection "+ConnApiFoodApp.database+" responded", nil).Debug()
+				break
+			}
+
+			if errPing != nil && index == 4 {
+				util.SystemLog("Get Connection", "failed to connect "+ConnApiFoodApp.database+" database", errPing).Debug()
+				return nil, errPing
+			}
 		}
 
-		if errPing == nil {
-			util.SystemLog("Get Connection", "connection "+ConnApiFoodApp.viperDirection+" responded", nil).Debug()
-			break
-		}
-
-		if errPing != nil && index == 4 {
-			util.SystemLog("Get Connection", "failed to connect "+ConnApiFoodApp.viperDirection+" database", errPing).Debug()
-			return nil, errPing
-		}
 	}
-
 	return db.dbPgsql, nil
-}
-
-func (dbPostgres *poolPgsql) getConnectionPostgres() (*sql.DB, error) {
-	if dbPostgres.dbPgsql == nil {
-		return nil, errors.New("failed to get connection")
-	}
-
-	if err := dbPostgres.dbPgsql.Ping(); err != nil {
-		return nil, errors.New("failed to ping connection: " + err.Error())
-	}
-
-	return dbPostgres.dbPgsql, nil
 }
