@@ -1,7 +1,7 @@
 package main
 
 import (
-	"apifoodweb/src/database"
+	database "apifoodweb/backend/config"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -13,19 +13,15 @@ var Environment string
 func init() {
 	initLogrus()
 	initViper()
+	initConnection()
 }
 
 func main() {
 	logrus.Debug("application start: this apps work on " + Environment + " environment.")
 
-	logrus.Debug("initiate database connection")
-	if errInitConn := database.InitAllConnection(); errInitConn != nil {
-		logrus.Error("error initiate database connction", errInitConn)
-	}
-
 	defer func() {
 		logrus.Debug("close all database connection")
-		database.CloseAllConnection()
+		database.CloseAllGormConnection()
 		logrus.Debug("application shutdown")
 	}()
 }
@@ -34,7 +30,7 @@ func initViper() {
 
 	viper.SetConfigName("config")
 	viper.SetConfigType("json")
-	viper.AddConfigPath("config/")
+	viper.AddConfigPath("backend/config/")
 
 	if errConfig := viper.ReadInConfig(); errConfig != nil {
 		logrus.Panicln("failed to read config:", errConfig)
@@ -56,4 +52,11 @@ func initLogrus() {
 		DisableSorting:  false,
 		PadLevelText:    true,
 	})
+}
+
+func initConnection() {
+	logrus.Debug("initiate database connection")
+	if errInitConn := database.InitAllGormConnection(); errInitConn != nil {
+		logrus.Panic("error initiate database connction", errInitConn)
+	}
 }
