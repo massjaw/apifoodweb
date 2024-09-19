@@ -3,7 +3,7 @@ package main
 import (
 	"apifoodweb/config"
 	database "apifoodweb/config"
-	"apifoodweb/src/models"
+	"apifoodweb/config/database/model"
 	"apifoodweb/src/util"
 	"os"
 
@@ -28,25 +28,25 @@ func main() {
 	}
 
 	// Drop existing tables if they exist
-	db.Migrator().DropTable(&models.UserDetail{})
-	db.Migrator().DropTable(&models.Users{})
+	db.Migrator().DropTable(&model.UserDetail{})
+	db.Migrator().DropTable(&model.Users{})
 
 	// AutoMigrate will create the tables if they don't exist
-	err := db.AutoMigrate(&models.Users{}, &models.UserDetail{})
+	err := db.AutoMigrate(&model.Users{}, &model.UserDetail{})
 	if err != nil {
 		logrus.Error("failed to migrate database: %v", err)
 	}
 
 	// Sample operations
 	// Create a user with detail
-	user := models.Users{
+	user := model.Users{
 		Username:       "massjaw",
 		Email:          "ibrahimhisyam@gmail.com",
 		HashedPassword: util.HashPassword("IniPassword"),
 	}
 	db.Create(&user)
 
-	userDetail := models.UserDetail{
+	userDetail := model.UserDetail{
 		UserID:         user.ID,
 		FirstName:      "Ibrahim",
 		MiddleName:     "Muhammad",
@@ -58,8 +58,8 @@ func main() {
 	db.Create(&userDetail)
 
 	// Retrieve the user with user detail
-	var getUser models.Users
-	var getUserDetail models.UserDetail
+	var getUser model.Users
+	var getUserDetail model.UserDetail
 	db.First(&getUser)
 	db.First(&getUserDetail)
 
