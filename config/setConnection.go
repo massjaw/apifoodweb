@@ -1,7 +1,7 @@
 package config
 
 import (
-	"apifoodweb/backend/src/util"
+	"apifoodweb/src/util"
 	"database/sql"
 	"encoding/json"
 	"fmt"
