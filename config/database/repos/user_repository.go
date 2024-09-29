@@ -9,7 +9,7 @@ import (
 
 type UserRepository interface {
 	FindAllUser() ([]model.Users, error)
-	FindUserByID(id string) (model.Users, error)
+	FindUserByUsername(username string) (model.Users, error)
 	FindUserDetailByID(id string) (model.UserDetail, error)
 	CreateUser(user *model.Users) error
 	UpdateUser(user *model.Users) error
@@ -33,9 +33,9 @@ func (r *userRepository) FindAllUser() ([]model.Users, error) {
 	return users, err
 }
 
-func (r *userRepository) FindUserByID(userId string) (user model.Users, errMsg error) {
+func (r *userRepository) FindUserByUsername(username string) (user model.Users, errMsg error) {
 
-	errMsg = r.db.First(&user, "id = ?", userId).Error
+	errMsg = r.db.First(&user, "username = ?", username).Error
 	if errMsg != nil {
 		return user, errMsg
 	}

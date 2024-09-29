@@ -9,6 +9,7 @@ import (
 type Users struct {
 	gorm.Model
 	ID             string `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	Role           string `gorm:"column:role;default:'User'"`
 	Username       string `gorm:"column:username;unique;not null"`
 	Email          string `gorm:"column:email;unique;not null"`
 	HashedPassword string `gorm:"column:hashed_password;type:text"`
