@@ -79,7 +79,7 @@ func DecryptCamellia(encryptedString string) string {
 
 func getSalt() string {
 
-	encSalt := viper.GetString("Encryption.enc_salt")
+	encSalt := viper.GetString("ENCRYPTION.SALT")
 
 	saltBase64, err := base64.StdEncoding.DecodeString(encSalt)
 	if err != nil {

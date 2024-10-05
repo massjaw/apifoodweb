@@ -13,11 +13,11 @@ import (
 )
 
 type PostgresConfig struct {
-	Host     string `json:"host"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Database string `json:"dbname"`
-	Port     int    `json:"port"`
+	Host     string `json:"DB_HOST"`
+	Username string `json:"DB_USERNAME"`
+	Password string `json:"DB_PASSWORD"`
+	Database string `json:"DB_NAME"`
+	Port     int    `json:"DB_PORT"`
 }
 
 type poolPgsql struct {
@@ -46,7 +46,7 @@ func InitAllConnection() error {
 
 	ConnApiFoodApp = new(poolPgsql)
 
-	if errCreateConnection = createConnectionPostgres(ConnApiFoodApp, "Database.Postgres.apifoodapp"); errCreateConnection != nil {
+	if errCreateConnection = createConnectionPostgres(ConnApiFoodApp, "DATABASE.APIFOODAPP"); errCreateConnection != nil {
 		return errCreateConnection
 	}
 

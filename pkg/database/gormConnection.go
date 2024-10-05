@@ -26,7 +26,7 @@ func InitAllGormConnection() error {
 
 	GormApifoodapp = new(poolGorm)
 
-	errOpen := createConnectionGorm(GormApifoodapp, "Database.Postgres.apifoodapp")
+	errOpen := createConnectionGorm(GormApifoodapp, "DATABASE.APIFOODAPP")
 	if errOpen != nil {
 		return errOpen
 	}

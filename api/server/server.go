@@ -18,26 +18,25 @@ type SetupServer struct {
 func InitApplicationServer() *SetupServer {
 
 	route := gin.New()
-	env := viper.GetString("Environment")
+	env := viper.GetString("ENVIRONMENT")
 
 	if env == "Production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	route.HandleMethodNotAllowed = true
-	route.NoMethod(func(c *gin.Context) {
-
-		resp.MethodNotAllowed().HandleResponse(c)
-	})
 	route.NoRoute(func(c *gin.Context) {
 
 		resp.NoRoute(c.Request.RequestURI).HandleResponse(c)
 	})
+	route.NoMethod(func(c *gin.Context) {
 
+		resp.MethodNotAllowed().HandleResponse(c)
+	})
 	return &SetupServer{
-		Port:   viper.GetString("Port"),
+		Port:   viper.GetString("SERVER_PORT"),
 		Engine: route,
-		Path:   viper.GetString("Release_Host"),
+		Path:   viper.GetString("SERVER_HOST"),
 		Env:    env,
 	}
 }

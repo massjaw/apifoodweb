@@ -33,7 +33,7 @@ func initViper() {
 		logrus.Panicln("failed to read config:", errConfig)
 	}
 
-	Environment = "\033[31m" + viper.GetString("Environment") + "\033[0m"
+	Environment = "\033[31m" + viper.GetString("ENVIRONMENT") + "\033[0m"
 
 }
 

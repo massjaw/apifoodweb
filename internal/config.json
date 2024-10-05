@@ -1,22 +1,20 @@
 {
-    "Environment": "development",
-    "Port": ":2488",
-    "ReleaseHost": "",
-    "IsDebug": false,
+    "ENVIRONMENT": "development",
+    "SERVER_PORT": ":2488",
+    "SERVER_HOST": "",
+    "DEBUG_MODE": false,
 
-    "Encryption": {
-        "enc_salt": "ZDNkNDc0ZDQ5NjY0NzRhNTEzOTU3NGQ0ODY0NjQ1YTU4Nzk0NDVlNDAzZDQ3NWE1ODcxNTIzOTU5Nzk1NDVmNDc3MTQ0NWE1OTdkNDc1YTVhNzk1NzVkNA=="
+    "ENCRYPTION": {
+        "SALT": "ZDNkNDc0ZDQ5NjY0NzRhNTEzOTU3NGQ0ODY0NjQ1YTU4Nzk0NDVlNDAzZDQ3NWE1ODcxNTIzOTU5Nzk1NDVmNDc3MTQ0NWE1OTdkNDc1YTVhNzk1NzVkNA=="
     },
 
-    "Database": {
-        "Postgres": {
-            "apifoodapp": {
-                "host": "localhost",
-                "port": 5432,
-                "dbname": "apifoodapp",
-                "username": "postgres",
-                "password": "yR0eo61bjLP+Qb+If4b9b8DM0AdAns1gGoANg7fbtOn0RRs="
-            }
+    "DATABASE": {
+        "APIFOODAPP": {
+            "DB_HOST": "localhost",
+            "DB_PORT": 5432,
+            "DB_NAME": "apifoodapp",
+            "DB_USERNAME": "postgres",
+            "DB_PASSWORD": "yR0eo61bjLP+Qb+If4b9b8DM0AdAns1gGoANg7fbtOn0RRs="
         }
     }
 }
