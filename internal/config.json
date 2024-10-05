@@ -1,5 +1,8 @@
 {
     "Environment": "development",
+    "Port": ":2488",
+    "ReleaseHost": "",
+    "IsDebug": false,
 
     "Encryption": {
         "enc_salt": "ZDNkNDc0ZDQ5NjY0NzRhNTEzOTU3NGQ0ODY0NjQ1YTU4Nzk0NDVlNDAzZDQ3NWE1ODcxNTIzOTU5Nzk1NDVmNDc3MTQ0NWE1OTdkNDc1YTVhNzk1NzVkNA=="
