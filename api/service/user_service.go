@@ -1,11 +1,11 @@
 package service
 
 import (
-	connection "apifoodweb/internal/database"
-	"apifoodweb/internal/database/model"
-	repository "apifoodweb/internal/database/repos"
-	"apifoodweb/src/dto/req"
-	"apifoodweb/src/dto/resp"
+	"apifoodweb/api/dto/req"
+	"apifoodweb/api/dto/resp"
+	connection "apifoodweb/pkg/database"
+	"apifoodweb/pkg/database/model"
+	repository "apifoodweb/pkg/database/repos"
 	"database/sql"
 	"errors"
 

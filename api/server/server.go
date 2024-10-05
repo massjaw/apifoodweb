@@ -1,8 +1,8 @@
 package server
 
 import (
-	"apifoodweb/src/dto/resp"
-	"apifoodweb/src/util"
+	"apifoodweb/api/dto/resp"
+	"apifoodweb/pkg/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"

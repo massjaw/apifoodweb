@@ -1,7 +1,7 @@
 package database
 
 import (
-	"apifoodweb/src/util"
+	"apifoodweb/pkg/util"
 	"time"
 
 	"gorm.io/driver/postgres"

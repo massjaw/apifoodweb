@@ -1,7 +1,7 @@
 package database
 
 import (
-	"apifoodweb/src/util"
+	"apifoodweb/pkg/util"
 	"database/sql"
 	"encoding/json"
 	"fmt"
