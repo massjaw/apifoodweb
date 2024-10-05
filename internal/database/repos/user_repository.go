@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"apifoodweb/config/database/model"
+	"apifoodweb/internal/database/model"
 	"errors"
 
 	"gorm.io/gorm"
