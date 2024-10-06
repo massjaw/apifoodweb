@@ -3,8 +3,8 @@ package service
 import (
 	"apifoodweb/api/dto/req"
 	"apifoodweb/api/dto/resp"
+	repository "apifoodweb/api/repository"
 	"apifoodweb/pkg/database/model"
-	repository "apifoodweb/pkg/database/repos"
 	"apifoodweb/pkg/util"
 	"database/sql"
 	"errors"
