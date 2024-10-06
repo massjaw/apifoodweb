@@ -3,28 +3,36 @@ package service
 import (
 	"apifoodweb/api/dto/req"
 	"apifoodweb/api/dto/resp"
-	connection "apifoodweb/pkg/database"
 	"apifoodweb/pkg/database/model"
 	repository "apifoodweb/pkg/database/repos"
+	"apifoodweb/pkg/util"
 	"database/sql"
 	"errors"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
-func LoginUser(loginUser req.UsersRequestAPI) (*resp.CommonResponse, error) {
+type UserService interface {
+	LoginUser(loginUser *req.UsersRequestAPI) (*resp.CommonResponse, error)
+	RegisterUser(regisUser *req.UsersRequestAPI) (*resp.CommonResponse, error)
+}
 
-	errHash := passwordEncrypt(&loginUser)
+type userService struct {
+	userRepo repository.UserRepository
+}
+
+func NewUserService(userRepo repository.UserRepository) UserService {
+	return &userService{
+		userRepo: userRepo,
+	}
+}
+
+func (u userService) LoginUser(loginUser *req.UsersRequestAPI) (*resp.CommonResponse, error) {
+
+	errHash := util.PasswordEncrypt(loginUser)
 	if errHash != nil {
 		return resp.SomethingWentWrong(), errors.New("failed to hash password: " + errHash.Error())
 	}
 
-	db, errDb := connection.GetConnectionGormApiFoodApp()
-	if errDb != nil {
-		return resp.FailedConnectDatabase("apifoodapp"), errors.New("failed to connect database: " + errDb.Error())
-	}
-
-	userDB, errGetUser := repository.NewUserRepository(db).FindUserByUsername(loginUser.Username)
+	userDB, errGetUser := u.userRepo.FindUserByUsername(loginUser.Username)
 	if errGetUser != nil {
 		if errGetUser == sql.ErrNoRows {
 			return resp.UserNotFound(), errors.New("user not found")
@@ -39,13 +47,13 @@ func LoginUser(loginUser req.UsersRequestAPI) (*resp.CommonResponse, error) {
 	return resp.StatusOK("login success", ""), nil
 }
 
-func RegisterUser(regisUser req.UsersRequestAPI) (*resp.CommonResponse, error) {
+func (u *userService) RegisterUser(regisUser *req.UsersRequestAPI) (*resp.CommonResponse, error) {
 
 	if regisUser.Password != regisUser.RePassword {
 		return resp.PasswordNotMatch(), errors.New("password not match")
 	}
 
-	errHash := passwordEncrypt(&regisUser)
+	errHash := util.PasswordEncrypt(regisUser)
 	if errHash != nil {
 		return resp.SomethingWentWrong(), errors.New("failed to hash password")
 	}
@@ -56,26 +64,9 @@ func RegisterUser(regisUser req.UsersRequestAPI) (*resp.CommonResponse, error) {
 		HashedPassword: regisUser.Password,
 	}
 
-	db, errDb := connection.GetConnectionGormApiFoodApp()
-	if errDb != nil {
-		return resp.FailedConnectDatabase("apifoodapp"), errors.New("failed to connect database: " + errDb.Error())
-	}
-
-	if errCreateUser := repository.NewUserRepository(db).CreateUser(&userData); errCreateUser != nil {
+	if errCreateUser := u.userRepo.CreateUser(&userData); errCreateUser != nil {
 		return resp.SomethingWentWrong(), errCreateUser
 	}
 
 	return resp.Created("user created", userData), nil
-}
-
-func passwordEncrypt(userInfoRequest *req.UsersRequestAPI) error {
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userInfoRequest.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-
-	userInfoRequest.Password = string(hashedPassword)
-
-	return err
 }
