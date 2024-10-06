@@ -4,21 +4,12 @@ import (
 	"apifoodweb/pkg/util"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/spf13/viper"
 
 	_ "github.com/lib/pq"
 )
-
-type PostgresConfig struct {
-	Host     string `json:"DB_HOST"`
-	Username string `json:"DB_USERNAME"`
-	Password string `json:"DB_PASSWORD"`
-	Database string `json:"DB_NAME"`
-	Port     int    `json:"DB_PORT"`
-}
 
 type poolPgsql struct {
 	dbPgsql        *sql.DB
@@ -85,12 +76,6 @@ func createConnectionPostgres(dbConn *poolPgsql, viperDirection string) error {
 }
 
 // =========================================== local function to get connection string from config.json =========================================
-
-// Turn struct postgress database config into connection string.
-func (c *PostgresConfig) connString() string {
-	util.SystemLog("Init Connection", "transform struct to connection string", nil).Debug()
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", c.Host, c.Username, util.DecryptCamellia(c.Password), c.Database, c.Port)
-}
 
 // Function to get specific postgress database config,insert viper direction as input parameter.
 func getPostgresConfig(viperDirection string) *PostgresConfig {

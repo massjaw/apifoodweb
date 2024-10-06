@@ -21,7 +21,9 @@ type userRepository struct {
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
-	return &userRepository{db: db}
+	repo := new(userRepository)
+	repo.db = db
+	return repo
 }
 
 func (r *userRepository) FindAllUser() ([]model.Users, error) {
