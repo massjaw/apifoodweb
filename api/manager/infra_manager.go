@@ -19,11 +19,11 @@ type infraManager struct {
 }
 
 func NewInfraManager(cfg config.AppConfig) InfraManager {
-	infra := infraManager{
+	infra := &infraManager{
 		cfg: cfg,
 	}
 	infra.initDB()
-	return &infra
+	return infra
 }
 
 func (i *infraManager) DbConn() *gorm.DB {
@@ -46,4 +46,5 @@ func (i *infraManager) initDB() {
 	}()
 
 	i.db = gormDb
+	util.SystemLog("Database Connection", "database connected", nil).Info()
 }

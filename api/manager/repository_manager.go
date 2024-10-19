@@ -13,3 +13,9 @@ type repositoryManager struct {
 func (r *repositoryManager) UserRepo() repository.UserRepository {
 	return repository.NewUserRepository(r.infraManager.DbConn())
 }
+
+func NewRepoManager(manager InfraManager) RepoManager {
+	return &repositoryManager{
+		infraManager: manager,
+	}
+}
