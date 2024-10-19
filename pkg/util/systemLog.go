@@ -6,10 +6,32 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type LogInterface interface {
+	Trace()
+	Info()
+	Debug()
+	Warn()
+	Error()
+	Panic()
+	Fatal()
+}
 type LogFields struct {
 	ProjectName  string
 	Message      string
 	ErrorMessage string
+}
+
+func SystemLog(projectName, message string, errMsg error) LogInterface {
+
+	if errMsg == nil {
+		errMsg = errors.New("Additional Info: ")
+	}
+
+	return &LogFields{
+		Message:      message,
+		ErrorMessage: errMsg.Error(),
+		ProjectName:  projectName,
+	}
 }
 
 // Print log to terminal, lowest level
@@ -78,7 +100,7 @@ func (c *LogFields) Warn() {
 
 // Print log for a error information, but not stop the app
 func (c *LogFields) Error() {
-	if c.ErrorMessage != "" {
+	if c.ErrorMessage == "" {
 
 		logrus.WithFields(logrus.Fields{
 			"project name": c.ProjectName,
@@ -121,18 +143,5 @@ func (c *LogFields) Fatal() {
 			"error message": c.ErrorMessage,
 			"project name":  c.ProjectName,
 		}).Fatal(c.Message)
-	}
-}
-
-func SystemLog(projectName, message string, errMsg error) *LogFields {
-
-	if errMsg == nil {
-		errMsg = errors.New("Additional Info: ")
-	}
-
-	return &LogFields{
-		Message:      message,
-		ErrorMessage: errMsg.Error(),
-		ProjectName:  projectName,
 	}
 }
