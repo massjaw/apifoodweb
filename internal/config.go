@@ -14,7 +14,7 @@ type ApiConfig struct {
 
 type DbConfig struct {
 	Host     string `json:"DB_HOST"`
-	User     string `json:"DB_USER"`
+	User     string `json:"DB_USERNAME"`
 	Password string `json:"DB_PASSWORD"`
 	Database string `json:"DB_NAME"`
 	Port     string `json:"DB_PORT"`
@@ -59,8 +59,8 @@ func (c *AppConfig) readFileConfig(viperDirection string) {
 	return
 }
 
-func NewConfig() AppConfig {
+func NewConfig(viperDirection string) AppConfig {
 	configuration := AppConfig{}
-	configuration.readFileConfig("DATABASE.APIFOODAPP")
+	configuration.readFileConfig(viperDirection)
 	return configuration
 }

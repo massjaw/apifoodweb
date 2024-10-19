@@ -14,8 +14,7 @@
             "DB_PORT": "5432",
             "DB_NAME": "apifoodapp",
             "DB_USERNAME": "postgres",
-            "DB_PASSWORD": "yR0eo61bjLP+Qb+If4b9b8DM0AdAns1gGoANg7fbtOn0RRs=",
-            "SSL_MODE": false
+            "DB_PASSWORD": "yR0eo61bjLP+Qb+If4b9b8DM0AdAns1gGoANg7fbtOn0RRs="
         }
     }
 }
