@@ -52,6 +52,8 @@ func (c *AppConfig) readFileConfig(viperDirection string) {
 		return
 	}
 
+	configStruct.Password = util.DecryptCamellia(configStruct.Password)
+
 	util.SystemLog("Init Connection", "Success get config "+configStruct.Database+" database", nil).Debug()
 	c.DbConfig = configStruct
 	c.ApiConfig.ApiPort = viper.GetString("SERVER_PORT")
