@@ -2,7 +2,6 @@ package main
 
 import (
 	"apifoodweb/api/server"
-	"apifoodweb/internal/database"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -14,13 +13,12 @@ var Environment string
 func init() {
 	initLogrus()
 	initViper()
-	initConnection()
 }
 
 func main() {
 	logrus.Debug("application start: this apps work on " + Environment + " environment.")
 
-	server.InitApplicationServer().Run()
+	server.Server().Run()
 }
 
 func initViper() {
@@ -49,11 +47,4 @@ func initLogrus() {
 		DisableSorting:  false,
 		PadLevelText:    true,
 	})
-}
-
-func initConnection() {
-	logrus.Debug("initiate database connection")
-	if errInitConn := database.InitAllGormConnection(); errInitConn != nil {
-		logrus.Panic("error initiate database connction", errInitConn)
-	}
 }
