@@ -1,111 +1,82 @@
 package resp
 
 import (
+	"errors"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
-type CommonResponse struct {
-	StatusCode    int         `json:"statusCode,omitempty"`
+const (
+	DefaultSuccessCode    = "00"
+	DefaultSuccessStatus  = "Success"
+	DefaultSuccessMessage = "Success"
+
+	DefaultErrorCode    = "X00"
+	DefaultErrorStatus  = "Failed"
+	DefaultErrorMessage = "something went wrong"
+)
+
+type ApiResponse struct {
+	StatusCode    string      `json:"statusCode,omitempty"`
+	Status        string      `json:"status,omitempty"`
 	StatusMessage string      `json:"statusMessage,omitempty"`
 	Result        interface{} `json:"result,omitempty"`
 }
 
-func (r *CommonResponse) HandleResponse(ctx *gin.Context) {
+func NewSuccessMessage(httpCode int, code string, msg string, data interface{}) (httpStatusCode int, apiResponse ApiResponse) {
 
-	ctx.JSON(r.StatusCode, r)
+	if httpCode == 0 {
+		httpStatusCode = http.StatusOK
+	} else {
+		httpStatusCode = httpCode
+	}
+
+	if code == "" {
+		code = DefaultSuccessCode
+	}
+
+	if msg == "" {
+		msg = DefaultSuccessMessage
+	}
+
+	apiResponse = ApiResponse{
+		code,
+		DefaultSuccessStatus,
+		msg,
+		data,
+	}
+
+	return
 }
 
-// 200
-func StatusOK(message string, data interface{}) *CommonResponse {
+func NewFailedMessage(httpCode int, code string, err error) (httpStatusCode int, apiResponse ApiResponse) {
 
-	return &CommonResponse{
-		StatusCode:    http.StatusOK,
-		StatusMessage: message,
-		Result:        data,
+	if httpCode == 0 {
+		httpStatusCode = http.StatusInternalServerError
+	} else {
+		httpStatusCode = httpCode
 	}
-}
 
-func Created(message string, dataResponse interface{}) *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusCreated,
-		StatusMessage: message,
-		Result:        dataResponse,
+	if code == "" {
+		code = DefaultSuccessCode
 	}
-}
 
-func Accepted(message string, dataResponse interface{}) *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusAccepted,
-		StatusMessage: message,
-		Result:        dataResponse,
+	var errHandler *ErrHandler
+
+	if errors.As(err, &errHandler) {
+		apiResponse = ApiResponse{
+			code,
+			DefaultErrorStatus,
+			errHandler.ErrorMessage,
+			nil,
+		}
+	} else {
+		apiResponse = ApiResponse{
+			code,
+			DefaultErrorStatus,
+			DefaultErrorMessage,
+			nil,
+		}
 	}
-}
 
-func NoContent(message string, dataResponse interface{}) *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusNoContent,
-		StatusMessage: message,
-		Result:        dataResponse,
-	}
-}
-
-// 400
-
-func UserNotFound() *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusNotFound,
-		StatusMessage: "user not found",
-		Result:        nil,
-	}
-}
-
-func WrongPassword() *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusUnauthorized,
-		StatusMessage: "password is invalid",
-		Result:        nil,
-	}
-}
-
-func PasswordNotMatch() *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusUnauthorized,
-		StatusMessage: "password not match",
-		Result:        nil,
-	}
-}
-
-func MethodNotAllowed() *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusMethodNotAllowed,
-		StatusMessage: "method not allowed",
-		Result:        nil,
-	}
-}
-
-func NoRoute(url string) *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusNotFound,
-		StatusMessage: url + " endpoint not available",
-		Result:        nil,
-	}
-}
-
-// 500
-func FailedConnectDatabase(databaseName string) *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusInternalServerError,
-		StatusMessage: "failed to connect database " + databaseName,
-		Result:        nil,
-	}
-}
-
-func SomethingWentWrong() *CommonResponse {
-	return &CommonResponse{
-		StatusCode:    http.StatusBadGateway,
-		StatusMessage: "something went wrong",
-		Result:        nil,
-	}
+	return
 }
