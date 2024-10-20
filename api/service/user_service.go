@@ -1,18 +1,15 @@
 package service
 
 import (
-	"apifoodweb/api/dto/req"
-	"apifoodweb/api/dto/resp"
 	repository "apifoodweb/api/repository"
 	"apifoodweb/pkg/database/model"
-	"apifoodweb/pkg/util"
 	"database/sql"
 	"errors"
 )
 
 type UserService interface {
-	LoginUser(loginUser *req.UsersRequestAPI) (*resp.CommonResponse, error)
-	RegisterUser(regisUser *req.UsersRequestAPI) (*resp.CommonResponse, error)
+	LoginUser(username string) (model.Users, error)
+	RegisterUser(userData *model.Users) (*model.Users, error)
 }
 
 type userService struct {
@@ -25,48 +22,24 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 	}
 }
 
-func (u userService) LoginUser(loginUser *req.UsersRequestAPI) (*resp.CommonResponse, error) {
+func (u userService) LoginUser(username string) (model.Users, error) {
 
-	errHash := util.PasswordEncrypt(loginUser)
-	if errHash != nil {
-		return resp.SomethingWentWrong(), errors.New("failed to hash password: " + errHash.Error())
-	}
-
-	userDB, errGetUser := u.userRepo.FindUserByUsername(loginUser.Username)
+	userDB, errGetUser := u.userRepo.FindUserByUsername(username)
 	if errGetUser != nil {
 		if errGetUser == sql.ErrNoRows {
-			return resp.UserNotFound(), errors.New("user not found")
+			return model.Users{}, errors.New("user not found")
 		}
-		return resp.SomethingWentWrong(), errGetUser
+		return model.Users{}, errGetUser
 	}
 
-	if userDB.HashedPassword != loginUser.Password {
-		return resp.WrongPassword(), errors.New("wrong password")
-	}
-
-	return resp.StatusOK("login success", ""), nil
+	return userDB, nil
 }
 
-func (u *userService) RegisterUser(regisUser *req.UsersRequestAPI) (*resp.CommonResponse, error) {
+func (u *userService) RegisterUser(userData *model.Users) (*model.Users, error) {
 
-	if regisUser.Password != regisUser.RePassword {
-		return resp.PasswordNotMatch(), errors.New("password not match")
+	if errCreateUser := u.userRepo.CreateUser(userData); errCreateUser != nil {
+		return userData, errCreateUser
 	}
 
-	errHash := util.PasswordEncrypt(regisUser)
-	if errHash != nil {
-		return resp.SomethingWentWrong(), errors.New("failed to hash password")
-	}
-
-	userData := model.Users{
-		Username:       regisUser.Username,
-		Email:          regisUser.Email,
-		HashedPassword: regisUser.Password,
-	}
-
-	if errCreateUser := u.userRepo.CreateUser(&userData); errCreateUser != nil {
-		return resp.SomethingWentWrong(), errCreateUser
-	}
-
-	return resp.Created("user created", userData), nil
+	return userData, nil
 }
